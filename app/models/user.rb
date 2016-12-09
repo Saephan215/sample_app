@@ -1,4 +1,5 @@
-class User < ApplicationRecord  
+class User < ApplicationRecord
+	has_many :microposts, dependent: :destroy
 	attr_accessor :remember_token, :activation_token, :reset_token
 	# Before saving, makes email all lowercase 
 	before_save :downcase_email
@@ -72,6 +73,11 @@ class User < ApplicationRecord
 		reset_sent_at < 2.hours.ago
 	end
 
+	# Defines a proto-feed
+	# See "Following users" for the full implmentations
+	def feed
+		Micropost.where("user_id = ?", id)
+	end
 
 	private
 
